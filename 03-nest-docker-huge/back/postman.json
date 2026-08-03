@@ -1,0 +1,1258 @@
+{
+	"info": {
+		"_postman_id": "d6c95fd1-4c6c-43fb-8328-b84ccfe6c5cd",
+		"name": "CompuNet3 API Tests",
+		"description": "Automated test suite for CompuNet3 API endpoints with data persistence",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12699219"
+	},
+	"item": [
+		{
+			"name": "1. Roles Management",
+			"item": [
+				{
+					"name": "Create Admin Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has required fields', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('id');",
+									"    pm.expect(responseJson).to.have.property('name');",
+									"    pm.expect(responseJson).to.have.property('description');",
+									"});",
+									"",
+									"// Save admin role ID for later use",
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.globals.set('adminRoleId', responseJson.id);",
+									"    console.log('Admin Role ID saved:', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"admin\",\n    \"description\": \"Administrator role with full access\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/roles",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has required fields', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('id');",
+									"    pm.expect(responseJson).to.have.property('name');",
+									"    pm.expect(responseJson).to.have.property('description');",
+									"});",
+									"",
+									"// Save user role ID for later use",
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.globals.set('userRoleId', responseJson.id);",
+									"    console.log('User Role ID saved:', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"user\",\n    \"description\": \"Regular user role with limited access\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/roles",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Roles",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response is an array', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('array');",
+									"});",
+									"",
+									"pm.test('Array contains at least 2 roles', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.length).to.be.at.least(2);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/roles",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Role by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has admin role details', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.name).to.equal('admin');",
+									"    pm.expect(responseJson.description).to.equal('Administrator role with full access');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/roles/{{adminRoleId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"roles",
+								"{{adminRoleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Role description was updated', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.description).to.equal('Updated administrator role description');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"Updated administrator role description\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/roles/{{adminRoleId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"roles",
+								"{{adminRoleId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Permissions Management",
+			"item": [
+				{
+					"name": "Create Read Permission",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has required fields', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('id');",
+									"    pm.expect(responseJson).to.have.property('name');",
+									"    pm.expect(responseJson).to.have.property('description');",
+									"});",
+									"",
+									"// Save read permission ID",
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.globals.set('readPermissionId', responseJson.id);",
+									"    console.log('Read Permission ID saved:', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"read\",\n    \"description\": \"Permission to read data\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/permissions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Write Permission",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"// Save write permission ID",
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.globals.set('writePermissionId', responseJson.id);",
+									"    console.log('Write Permission ID saved:', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"write\",\n    \"description\": \"Permission to write/modify data\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/permissions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Delete Permission",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"// Save delete permission ID",
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.globals.set('deletePermissionId', responseJson.id);",
+									"    console.log('Delete Permission ID saved:', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"delete\",\n    \"description\": \"Permission to delete data\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/permissions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Permissions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response is an array with at least 3 permissions', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('array');",
+									"    pm.expect(responseJson.length).to.be.at.least(3);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/permissions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Permission by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has read permission details', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.name).to.equal('read');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/permissions/{{readPermissionId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"permissions",
+								"{{readPermissionId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Role-Permission Management",
+			"item": [
+				{
+					"name": "Assign Read Permission to Admin Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Permission assigned successfully', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleId\": {{adminRoleId}},\n    \"permissionId\": {{readPermissionId}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/role-permissions/assign",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role-permissions",
+								"assign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Write Permission to Admin Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleId\": {{adminRoleId}},\n    \"permissionId\": {{writePermissionId}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/role-permissions/assign",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role-permissions",
+								"assign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Delete Permission to Admin Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleId\": {{adminRoleId}},\n    \"permissionId\": {{deletePermissionId}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/role-permissions/assign",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role-permissions",
+								"assign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Read Permission to User Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleId\": {{userRoleId}},\n    \"permissionId\": {{readPermissionId}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/role-permissions/assign",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role-permissions",
+								"assign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Write Permission from User Role (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200 or 404', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleId\": {{userRoleId}},\n    \"permissionId\": {{writePermissionId}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/role-permissions/remove",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role-permissions",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Users Management",
+			"item": [
+				{
+					"name": "Create Admin User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has required fields', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('id');",
+									"    pm.expect(responseJson).to.have.property('username');",
+									"    pm.expect(responseJson).to.have.property('email');",
+									"    pm.expect(responseJson).to.have.property('role');",
+									"});",
+									"",
+									"pm.test('User has admin role', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.role.name).to.equal('admin');",
+									"});",
+									"",
+									"// Save admin user ID",
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.globals.set('adminUserId', responseJson.id);",
+									"    console.log('Admin User ID saved:', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin_user\",\n    \"email\": \"admin@example.com\",\n    \"passwordHash\": \"hashed_password_123\",\n    \"bio\": \"System administrator\",\n    \"roleName\": \"admin\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Regular User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('User has user role', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.role.name).to.equal('user');",
+									"});",
+									"",
+									"// Save regular user ID",
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.globals.set('regularUserId', responseJson.id);",
+									"    console.log('Regular User ID saved:', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjExLCJlbWFpbCI6ImFkbWluQG1haWwuY29tIiwicGVybWlzc2lvbnMiOlsidXNlcl9jcmVhdGUiLCJ1c2VyX3JlYWQiLCJ1c2VyX3VwZGF0ZSIsInVzZXJfZGVsZXRlIl0sImlhdCI6MTc1OTAyMzY3MCwiZXhwIjoxNzU5MDI3MjcwfQ.S0QS5f8KuJ1p5K5QqGb1m6ehXfeit2JYpzwpaH87k4g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"regular_user\",\n    \"email\": \"user@example.com\",\n    \"passwordHash\": \"hashed_password_456\",\n    \"bio\": \"Regular system user\",\n    \"roleName\": \"user\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response is an array with at least 2 users', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('array');",
+									"    pm.expect(responseJson.length).to.be.at.least(2);",
+									"});",
+									"",
+									"pm.test('Users have role information', function () {",
+									"    const responseJson = pm.response.json();",
+									"    responseJson.forEach(user => {",
+									"        pm.expect(user).to.have.property('role');",
+									"        pm.expect(user.role).to.have.property('name');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjExLCJlbWFpbCI6ImFkbWluQG1haWwuY29tIiwicGVybWlzc2lvbnMiOlsidXNlcl9jcmVhdGUiLCJ1c2VyX3JlYWQiLCJ1c2VyX3VwZGF0ZSIsInVzZXJfZGVsZXRlIl0sImlhdCI6MTc1OTAyMzQyOSwiZXhwIjoxNzU5MDI3MDI5fQ.fRwhhcMgcehAsddCUbCuO_M0XLX0HP4IuIAI3PTwhTw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has admin user details', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.username).to.equal('admin_user');",
+									"    pm.expect(responseJson.email).to.equal('admin@example.com');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{adminUserId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{adminUserId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('User bio was updated', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.bio).to.equal('Updated administrator biography');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"bio\": \"Updated administrator biography\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{adminUserId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{adminUserId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Cleanup Tests",
+			"item": [
+				{
+					"name": "Delete Regular User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('User deletion confirmed', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{regularUserId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{regularUserId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Permission from Admin Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Permission removed successfully', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.message).to.include('Permission removed');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleId\": {{adminRoleId}},\n    \"permissionId\": {{deletePermissionId}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/role-permissions/remove",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role-permissions",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Permission",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/permissions/{{deletePermissionId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"permissions",
+								"{{deletePermissionId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Edge Cases & Error Handling",
+			"item": [
+				{
+					"name": "Create User with Non-existent Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 500 (Internal Server Error)', function () {",
+									"    pm.response.to.have.status(500);",
+									"});",
+									"",
+									"pm.test('Error message mentions role not found', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.message).to.include('Role not found');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test_user\",\n    \"email\": \"test@example.com\",\n    \"passwordHash\": \"password\",\n    \"bio\": \"Test user\",\n    \"roleName\": \"non_existent_role\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Non-existent User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200 (returns null) or 404', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    pm.test('Response is null for non-existent user', function () {",
+									"        const responseJson = pm.response.json();",
+									"        pm.expect(responseJson).to.be.null;",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/99999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Non-existent Permission to Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 500 (Internal Server Error)', function () {",
+									"    pm.response.to.have.status(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleId\": {{adminRoleId}},\n    \"permissionId\": 99999\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/role-permissions/assign",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role-permissions",
+								"assign"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "0. Login",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@mail.com\",\r\n    \"password\": \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global pre-request script",
+					"console.log('Running request:', pm.info.requestName);",
+					"console.log('Current globals:', {",
+					"    adminRoleId: pm.globals.get('adminRoleId'),",
+					"    userRoleId: pm.globals.get('userRoleId'),",
+					"    readPermissionId: pm.globals.get('readPermissionId'),",
+					"    writePermissionId: pm.globals.get('writePermissionId'),",
+					"    deletePermissionId: pm.globals.get('deletePermissionId'),",
+					"    adminUserId: pm.globals.get('adminUserId'),",
+					"    regularUserId: pm.globals.get('regularUserId')",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"pm.test('Response time is less than 5000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});",
+					"",
+					"pm.test('Response has Content-Type header', function () {",
+					"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		}
+	]
+}

@@ -1,0 +1,52 @@
+services:
+  # Base de Datos (PostgreSQL)
+  db:
+    image: postgres:16-alpine
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydatabase
+    ports:
+      - '5437:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Backend (NestJS API)
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: back-app
+    restart: always
+    ports:
+      - '8080:8080'
+    environment:
+      PORT: 8080
+      DB_TYPE: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: mydatabase
+      DB_SYNCHRONIZE: 'true'
+      JWT_SECRET: your_jwt_secret_key
+      JWT_EXPIRES_IN: 3600
+    depends_on:
+      - db
+
+  # Frontend (React + Vite TS)
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: front-app
+    restart: always
+    ports:
+      - '3000:80'
+    depends_on:
+      - back
+
+volumes:
+  postgres_data:
