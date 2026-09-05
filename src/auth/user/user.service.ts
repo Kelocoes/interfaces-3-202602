@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, ILike, IsNull, Not, Repository } from 'typeorm';
 
 import { User } from '../entities/user.entity';
 import { RoleService } from '../role/role.service';
@@ -112,4 +112,81 @@ export class UserService {
             where: { role: { name: roleName } },
         });
     }
+
+    /**
+     * Retorna usuarios registrados dentro de un rango de fechas con paginación.
+     * Demuestra el operador Between(), ordenamiento y paginación con findAndCount().
+     */
+    async findUsersCreatedBetween(startDate: Date, endDate: Date, limit = 10, offset = 0) {
+        return await this.userRepository.findAndCount({
+            where: {
+                createdAt: Between(startDate, endDate),
+            },
+            relations: {
+                role: true,
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+            take: limit,
+            skip: offset,
+        });
+    }
+
+    /**
+     * Búsqueda por coincidencia parcial en username o email, requiriendo que tenga bio.
+     * Demuestra condiciones tipo OR (pasando un arreglo a where) y el operador Not(IsNull()).
+     */
+    async searchUsersWithBio(term: string) {
+        return await this.userRepository.find({
+            where: [
+                { username: ILike(`%${term}%`), bio: Not(IsNull()) },
+                { email: ILike(`%${term}%`), bio: Not(IsNull()) },
+            ],
+            relations: {
+                role: true,
+            },
+            order: {
+                username: 'ASC',
+            },
+        });
+    }
+
+    /**
+     * Obtiene el usuario con su rol y los permisos asociados cargando relaciones anidadas
+     * con findOne() sin necesidad de QueryBuilder.
+     */
+    async getUserWithPermissions(userId: number) {
+        const user = await this.userRepository.findOne({
+            where: { id: userId },
+            relations: {
+                role: {
+                    rolePermissions: {
+                        permission: true,
+                    },
+                },
+            },
+        });
+
+        if (!user) {
+            return null;
+        }
+
+        const permissions = user.role?.rolePermissions?.map((rp) => rp.permission) || [];
+        return {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            bio: user.bio,
+            createdAt: user.createdAt,
+            role: {
+                id: user.role.id,
+                name: user.role.name,
+                description: user.role.description,
+            },
+            permissions,
+        };
+    }
 }
+
+
