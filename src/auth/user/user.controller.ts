@@ -11,6 +11,8 @@ import {
     InternalServerErrorException,
 } from '@nestjs/common';
 
+import { PositiveIntPipe } from '../../common/pipes/positive-int-pipe';
+
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -33,8 +35,8 @@ export class UserController {
 
     @Get(':id')
     @HttpCode(HttpStatus.OK)
-    findOne(@Param('id') id: string) {
-        return this.userService.findOne(+id);
+    findOne(@Param('id', PositiveIntPipe) id: number) {
+        return this.userService.findOne(id);
     }
 
     @Patch(':id')
