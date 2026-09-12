@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, ILike, IsNull, Not, Repository } from 'typeorm';
 
+import { RoleNotFoundException, UserNotFoundException } from '../../common/exceptions';
 import { User } from '../entities/user.entity';
 import { RoleService } from '../role/role.service';
 
@@ -19,7 +20,7 @@ export class UserService {
     async create(createUserDto: CreateUserDto) {
         const role = await this.roleService.findOne(createUserDto.roleId);
         if (!role) {
-            throw new Error('Role not found');
+            throw new RoleNotFoundException(createUserDto.roleId);
         }
 
         const newUser = this.userRepository.create({
@@ -37,8 +38,12 @@ export class UserService {
         });
     }
 
-    findOne(id: number) {
-        return this.userRepository.findOne({ where: { id } });
+    async findOne(id: number) {
+        const user = await this.userRepository.findOne({ where: { id } });
+        if (!user) {
+            throw new UserNotFoundException(id);
+        }
+        return user;
     }
 
     // /**
@@ -72,11 +77,20 @@ export class UserService {
     // }
 
     async update(id: number, updateUserDto: UpdateUserDto) {
+        if (updateUserDto.roleId) {
+            const role = await this.roleService.findOne(updateUserDto.roleId);
+            if (!role) {
+                throw new RoleNotFoundException(updateUserDto.roleId);
+            }
+        }
+
+        await this.findOne(id);
         await this.userRepository.update(id, updateUserDto);
         return this.findOne(id);
     }
 
     async remove(id: number) {
+        await this.findOne(id);
         const result = await this.userRepository.delete(id);
         if (result.affected) {
             return { id };
@@ -188,5 +202,3 @@ export class UserService {
         };
     }
 }
-
-
