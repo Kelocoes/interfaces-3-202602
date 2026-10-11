@@ -30,13 +30,16 @@ export class UserService {
         const saltRounds = parseInt(this.configService.get<string>('SALT_ROUNDS') ?? '10', 10);
 
         const passwordHashed = await bcrypt.hash(userData.passwordHash, saltRounds);
+        // Hashea la contraseña utilizando bcrypt.hash con el número de iteraciones de salt especificado.
 
+        // Crea y asigna los datos del usuario, la contraseña hasheada y el rol correspondiente.
         const user = this.userRepository.create({
             ...userData,
             passwordHash: passwordHashed,
             role,
         });
 
+        //Esto es para guardar el usuario en la base de datos y devolverlo sin la contraseña hasheada.
         const savedUser = await this.userRepository.save(user);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { passwordHash: _, ...userWithoutPassword } = savedUser;
@@ -46,6 +49,7 @@ export class UserService {
     findAll() {
         return this.userRepository.find({
             relations: {
+                //"cuando traigas cada User, tráeme también su Role completo pegado ahí mismo"
                 role: true,
             },
         });
@@ -56,6 +60,7 @@ export class UserService {
             where: { id },
             relations: { role: relations ? { rolePermissions: { permission: true } } : false },
         });
+        //si no se encontró nada devuelve "null" cuando no hay resultado (lanzas la excepción y cortas ahí).
         if (!user) {
             throw new UserNotFoundException(id);
         }
@@ -115,17 +120,17 @@ export class UserService {
         }
 
         await this.findOne(id);
-        await this.userRepository.update(id, updateUserDto);
-        return this.findOne(id);
+        await this.userRepository.update(id, updateUserDto); //aplica solo aplica para crear registros nuevos directamente, no para actualizar registros existentes. Por eso se hace un findOne antes de actualizar.
+        return this.findOne(id); //al final, vuelve a buscar el usuario ya actualizado y lo devuelve completo
     }
 
     async remove(id: number) {
-        await this.findOne(id);
+        await this.findOne(id); //valida si el usuario existe antes de intentar eliminarlo, si no existe lanza la excepción UserNotFoundException
         const result = await this.userRepository.delete(id);
-        if (result.affected) {
+        if (result.affected) { //si se eliminó algún registro, devuelve un objeto con el id del usuario eliminado
             return { id };
         }
-        return null;
+        return null; //si no se eliminó ningún registro, devuelve null
     }
 
     /**

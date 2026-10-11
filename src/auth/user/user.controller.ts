@@ -25,27 +25,33 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @Post()
+    @Post() //crea un nuevo recurso
+    @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+    @Permissions('manage_users')
     @HttpCode(HttpStatus.CREATED)
     create(@Body() createUserDto: CreateUserDto) {
         return this.userService.create(createUserDto);
     }
 
-    @Get()
+    @Get() // Endpoint para obtener todos los usuarios
     @HttpCode(HttpStatus.OK)
     @UseGuards(AuthGuard('jwt'), PermissionsGuard)
-    @Permissions('manage_users')
+    @Permissions('manage_users') // revisa si tienes ese permiso especifico para para dejarte pasar a esa sección en particular.
     findAll() {
         return this.userService.findAll();
     }
 
     @Get(':id')
+    @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+    @Permissions('manage_users')
     @HttpCode(HttpStatus.OK)
     findOne(@Param('id', PositiveIntPipe) id: number) {
         return this.userService.findOne(id);
     }
 
     @Patch(':id')
+    @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+    @Permissions('manage_users')
     @HttpCode(HttpStatus.OK)
     async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
         try {
@@ -63,6 +69,8 @@ export class UserController {
     }
 
     @Delete(':id')
+    @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+    @Permissions('manage_users')
     @HttpCode(HttpStatus.NO_CONTENT)
     async remove(@Param('id') id: string) {
         await this.userService.remove(+id);

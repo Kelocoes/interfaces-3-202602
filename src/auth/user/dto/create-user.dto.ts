@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreateUserDto {
     @IsString({ message: 'El nombre de usuario debe ser una cadena de texto' })
@@ -20,5 +20,6 @@ export class CreateUserDto {
     bio?: string;
 
     @IsNotEmpty({ message: 'Debe especificar el id del rol del usuario' })
+    @IsNumber({}, { message: 'El id del rol debe ser un número' })
     roleId: number;
 }
