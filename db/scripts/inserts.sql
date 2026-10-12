@@ -11,20 +11,27 @@ INSERT INTO permissions (name, description) VALUES
 ('delete_routine', 'Delete workout routines'),
 ('manage_users', 'Manage user accounts'),
 ('manage_roles', 'Manage roles and permissions'),
-('manage_exercises', 'Manage exercise catalog');
+('manage_exercises', 'Manage exercise catalog'),
+('read_exercise', 'Read the exercise catalog'),
+('create_activity_log', 'Register new workout sessions'),
+('read_activity_log', 'Read workout sessions'),
+('update_activity_log', 'Update workout sessions and their exercises'),
+('delete_activity_log', 'Delete workout sessions');
 
 -- Insert Role-Permission relationships
 INSERT INTO role_permissions (role_id, permission_id) VALUES
-(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), -- Admin has all permissions
-(2, 1), (2, 2), (2, 3), (2, 4);                         -- Regular user can manage their routines
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), -- Admin: permisos originales
+(1, 8), (1, 9), (1, 10), (1, 11), (1, 12),               -- Admin: ejercicios (lectura) y sesiones
+(2, 1), (2, 2), (2, 3), (2, 4),                          -- User: CRUD de rutinas
+(2, 8), (2, 9), (2, 10), (2, 11), (2, 12);               -- User: leer catalogo y CRUD de sesiones
 
 -- Insert Users
 INSERT INTO users (username, email, password_hash, bio, role_id, created_at) VALUES
-('admin_user', 'admin@gym.com', '$2b$10$hashedpassword1', 'System administrator', 1, NOW()),
-('juan_perez', 'juan@example.com', '$2b$10$hashedpassword2', 'Fitness enthusiast', 2, NOW()),
-('maria_garcia', 'maria@example.com', '$2b$10$hashedpassword3', 'Crossfit practitioner', 2, NOW()),
-('carlos_lopez', 'carlos@example.com', '$2b$10$hashedpassword4', 'Marathon runner', 2, NOW()),
-('ana_martinez', 'ana@example.com', '$2b$10$hashedpassword5', 'Powerlifting athlete', 2, NOW());
+('admin_user', 'admin@gym.com', '$2b$10$D3CTmtfAOgQvWo6bsFzIquMQGDz.Ottv5.2iKuRejKGKEsa78wPiC', 'System administrator', 1, NOW()),
+('juan_perez', 'juan@example.com', '$2b$10$D3CTmtfAOgQvWo6bsFzIquMQGDz.Ottv5.2iKuRejKGKEsa78wPiC', 'Fitness enthusiast', 2, NOW()),
+('maria_garcia', 'maria@example.com', '$2b$10$D3CTmtfAOgQvWo6bsFzIquMQGDz.Ottv5.2iKuRejKGKEsa78wPiC', 'Crossfit practitioner', 2, NOW()),
+('carlos_lopez', 'carlos@example.com', '$2b$10$D3CTmtfAOgQvWo6bsFzIquMQGDz.Ottv5.2iKuRejKGKEsa78wPiC', 'Marathon runner', 2, NOW()),
+('ana_martinez', 'ana@example.com', '$2b$10$D3CTmtfAOgQvWo6bsFzIquMQGDz.Ottv5.2iKuRejKGKEsa78wPiC', 'Powerlifting athlete', 2, NOW());
 
 -- Insert Exercises
 INSERT INTO exercises (name, description, type, estimated_calories, estimated_distance_km, estimated_duration_min, icon) VALUES
