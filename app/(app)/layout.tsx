@@ -1,13 +1,21 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { authService } from '@/features/auth/services/auth.service';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
+import { NotificationBell } from '@/features/notifications/components/NotificationBell';
+import { useSessionStore } from '@/shared/store/session.store';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
+
+    // Restaurar la sesión de localStorage una sola vez al montar el layout
+    useEffect(() => {
+        useSessionStore.persist.rehydrate();
+    }, []);
 
     const handleLogout = () => {
         authService.logout();
@@ -26,13 +34,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                             Dashboard
                         </Link>
                     </nav>
-                    <button
-                        type="button"
-                        onClick={handleLogout}
-                        className="btn btn-outline btn-error btn-sm"
-                    >
-                        Cerrar Sesión
-                    </button>
+
+                    <div className="flex items-center gap-3">
+                        {/* Campana de notificaciones reactiva de DaisyUI */}
+                        <NotificationBell />
+
+                        <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="btn btn-outline btn-error btn-sm"
+                        >
+                            Cerrar Sesión
+                        </button>
+                    </div>
                 </header>
 
                 <main className="max-w-4xl mx-auto p-6">{children}</main>

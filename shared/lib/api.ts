@@ -1,9 +1,9 @@
-import { session } from './session';
+import { useSessionStore } from '@/shared/store/session.store';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 function getHeaders(): HeadersInit {
-    const token = session.getToken();
+    const token = useSessionStore.getState().token;
     const headers: HeadersInit = { 'Content-Type': 'application/json' };
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
