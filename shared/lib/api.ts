@@ -1,6 +1,6 @@
 import { useSessionStore } from '@/shared/store/session.store';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 function getHeaders(): HeadersInit {
     const token = useSessionStore.getState().token;
