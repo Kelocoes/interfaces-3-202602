@@ -26,3 +26,28 @@
   --color-base-content: #1e293b;
 }
 
+@plugin "daisyui/theme" {
+  name: "icesi-dark";
+  color-scheme: dark;
+  --color-primary: #7b7bf2;
+  --color-primary-content: #0f172a;
+  --color-secondary: #a78bf5;
+  --color-secondary-content: #0f172a;
+  --color-accent: #4cb979;
+  --color-accent-content: #0f172a;
+  --color-neutral: #cbd5e1;
+  --color-neutral-content: #0f172a;
+  --color-info: #7b7bf2;
+  --color-info-content: #0f172a;
+  --color-success: #4cb979;
+  --color-success-content: #0f172a;
+  --color-warning: #e4eb60;
+  --color-warning-content: #1f2937;
+  --color-error: #f0866a;
+  --color-error-content: #0f172a;
+  --color-base-100: #1e293b;
+  --color-base-200: #172033;
+  --color-base-300: #0f172a;
+  --color-base-content: #e2e8f0;
+}
+
