@@ -11,6 +11,7 @@ import { useSessionStore } from '@/shared/store/session.store';
 const LINKS = [
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/exercises', label: 'Ejercicios' },
+    { href: '/routines', label: 'Rutinas' },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
