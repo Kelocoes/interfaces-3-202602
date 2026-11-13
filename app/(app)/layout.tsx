@@ -8,6 +8,11 @@ import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { useSessionStore } from '@/shared/store/session.store';
 
+const LINKS = [
+    { href: '/dashboard', label: 'Dashboard' },
+    { href: '/exercises', label: 'Ejercicios' },
+];
+
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
@@ -27,12 +32,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="min-h-screen bg-base-200">
                 <header className="navbar bg-base-100 shadow-sm px-6 justify-between border-b border-base-300">
                     <nav className="flex items-center gap-4">
-                        <Link
-                            href="/dashboard"
-                            className={`btn btn-ghost btn-sm ${pathname === '/dashboard' ? 'btn-active font-bold' : ''}`}
-                        >
-                            Dashboard
-                        </Link>
+                        {LINKS.map((link) => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className={`btn btn-ghost btn-sm ${pathname.startsWith(link.href) ? 'btn-active font-bold' : ''}`}
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
                     </nav>
 
                     <div className="flex items-center gap-3">
