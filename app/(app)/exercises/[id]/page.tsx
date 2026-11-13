@@ -1,38 +1,31 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { EXERCISES } from '@/features/exercises/data';
-import { ExerciseDetail } from '@/features/exercises/components/ExerciseDetail';
-import { getExerciseById } from '@/features/exercises/services/exercises.service';
+import { ExerciseChecklist } from '@/features/routines/components/ExerciseChecklist';
+import { routinesStore } from '@/features/routines/store';
 
 interface PageProps {
     params: Promise<{ id: string }>;
 }
 
-
-export function generateStaticParams() {
-    return EXERCISES.map((exercise) => ({ id: String(exercise.id) }));
-}
-
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export default async function RoutineDetailPage({ params }: PageProps) {
     const { id } = await params;
-    const exercise = await getExerciseById(Number(id));
-    return { title: exercise ? exercise.name : 'Ejercicio no encontrado' };
-}
+    const routine = routinesStore.get(Number(id));
 
-export default async function ExerciseDetailPage({ params }: PageProps) {
-    const { id } = await params;
-    const exercise = await getExerciseById(Number(id));
+    if (!routine) notFound();
 
-    if (!exercise) notFound();
+    const exercises = routine.exerciseIds
+        .map((exerciseId) => EXERCISES.find((exercise) => exercise.id === exerciseId))
+        .filter((exercise) => exercise !== undefined);
 
     return (
         <div className="flex flex-col gap-4">
-            <Link href="/exercises" className="btn btn-ghost btn-sm w-fit">
-                ← Volver a ejercicios
-            </Link>
-            <ExerciseDetail exercise={exercise} />
+            <Link href="/routines" className="btn btn-ghost btn-sm w-fit">← Volver a rutinas</Link>
+            <div>
+                <h1 className="text-2xl font-bold">{routine.name}</h1>
+                <p className="text-sm opacity-70">{routine.description}</p>
+            </div>
+            <ExerciseChecklist routineId={routine.id} exercises={exercises} doneIds={routine.doneIds} />
         </div>
     );
 }
