@@ -18,14 +18,22 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <AuthGuard>
             <div className="min-h-screen bg-base-200">
                 <header className="navbar bg-base-100 shadow-sm px-6 justify-between border-b border-base-300">
-                    <nav className="flex items-center gap-4">
-                        <Link
-                            href="/dashboard"
-                            className={`btn btn-ghost btn-sm ${pathname === '/dashboard' ? 'btn-active font-bold' : ''}`}
-                        >
-                            Dashboard
-                        </Link>
-                    </nav>
+                    
+<nav className="flex items-center gap-4">
+    <Link
+        href="/dashboard"
+        className={`btn btn-ghost btn-sm ${pathname === '/dashboard' ? 'btn-active font-bold' : ''}`}
+    >
+        Dashboard
+    </Link>
+    <Link
+        href="/exercises"
+        className={`btn btn-ghost btn-sm ${pathname.startsWith('/exercises') ? 'btn-active font-bold' : ''}`}
+    >
+        Ejercicios
+    </Link>
+</nav>
+
                     <button
                         type="button"
                         onClick={handleLogout}

@@ -1,7 +1,11 @@
-import type { NextConfig } from "next";
+
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+    images: {
+        // Next solo optimiza imágenes de los dominios que declares aquí
+        remotePatterns: [{ protocol: 'https', hostname: 'placehold.co' }],
+    },
 };
 
 export default nextConfig;
