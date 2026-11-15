@@ -1,10 +1,17 @@
-
 import Image from 'next/image';
 import Link from 'next/link';
-import { CATEGORIES, type Exercise } from '../types';
+import { CATEGORIES, type Category, type Exercise } from '../types';
+
+// Colores de marca por categoría
+const CATEGORY_COLORS: Record<Category, string> = {
+    fuerza: '#5454e9',
+    cardio: '#e9683b',
+    movilidad: '#4cb979',
+};
 
 export function ExerciseCard({ exercise, priority = false }: { exercise: Exercise; priority?: boolean }) {
     const category = CATEGORIES.find((c) => c.value === exercise.category);
+    const categoryColor = CATEGORY_COLORS[exercise.category];
 
     return (
         <Link
@@ -26,8 +33,18 @@ export function ExerciseCard({ exercise, priority = false }: { exercise: Exercis
                 <h2 className="card-title text-base">{exercise.name}</h2>
                 <p className="text-sm opacity-70">{exercise.muscle}</p>
                 <div className="mt-1 flex items-center gap-2">
-                    <span className="badge badge-secondary badge-sm">{category?.label}</span>
-                    <span className="text-xs opacity-70">{exercise.durationMin} min</span>
+                    <span
+                        className="badge badge-sm text-white"
+                        style={{
+                            backgroundColor: categoryColor,
+                            borderColor: categoryColor,
+                        }}
+                    >
+                        {category?.label}
+                    </span>
+                    <span className="text-xs opacity-70">
+                        {exercise.durationMin} min
+                    </span>
                 </div>
             </div>
         </Link>

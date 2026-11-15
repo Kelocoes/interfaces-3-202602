@@ -2,8 +2,8 @@
 import { getExercises, type ExerciseFilters } from '../services/exercises.service';
 import { ExerciseCard } from './ExerciseCard';
 
-export async function ExerciseGrid({ q, category }: ExerciseFilters) {
-    const exercises = await getExercises({ q, category });
+export async function ExerciseGrid({ q, category, duration }: ExerciseFilters) {
+    const exercises = await getExercises({ q, category, duration });
 
     if (exercises.length === 0) {
         return (

@@ -9,6 +9,7 @@ const delay = (ms: number) =>
 export interface ExerciseFilters {
     q?: string;
     category?: string;
+    duration?: string;
 }
 
 export async function getExercises(
@@ -17,6 +18,7 @@ export async function getExercises(
     await delay(800);
 
     const q = filters.q?.trim().toLowerCase();
+    const duration = filters.duration;
 
     return EXERCISES.filter((exercise) => {
         const matchesText =
@@ -28,7 +30,12 @@ export async function getExercises(
             !filters.category ||
             exercise.category === (filters.category as Category);
 
-        return matchesText && matchesCategory;
+        const matchesDuration =
+            !duration ||
+            (duration === '5' && exercise.durationMin <= 5) ||
+            (duration === '10' && exercise.durationMin <= 10);
+
+        return matchesText && matchesCategory && matchesDuration;
     });
 }
 
