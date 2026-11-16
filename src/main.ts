@@ -1,3 +1,4 @@
+
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
@@ -15,12 +16,14 @@ async function bootstrap() {
     );
 
     app.enableCors({
-        origin: "http://localhost:3000",
-        credentials: true
+        origin: 'http://localhost:3000',
+        credentials: true,
     });
 
-    await app.listen(3000);
+    const port = Number(process.env.PORT ?? 4000);
+    await app.listen(port);
 }
+
 bootstrap().catch((error) => {
     console.error('Error al iniciar la aplicación:', error);
     process.exit(1);

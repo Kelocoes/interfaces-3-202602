@@ -1,3 +1,4 @@
+
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
@@ -5,10 +6,11 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { RoutinesModule } from './routines/routines.module';
 
 @Module({
     imports: [
-        ConfigModule.forRoot({ isGlobal: true }), // Load .env file and make it available globally
+        ConfigModule.forRoot({ isGlobal: true }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
@@ -25,8 +27,8 @@ import { AuthModule } from './auth/auth.module';
                 }) as TypeOrmModuleOptions,
         }),
         AuthModule,
+        RoutinesModule,
     ],
-
     controllers: [AppController],
     providers: [AppService],
 })
