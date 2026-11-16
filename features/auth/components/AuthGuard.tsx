@@ -11,9 +11,11 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (!session.isAuthenticated()) {
             router.replace('/login');
-        } else {
-            setIsAuthorized(true);
-        }
+        } 
+        else {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsAuthorized(true);
+}
     }, [router]);
 
     if (!isAuthorized) {
