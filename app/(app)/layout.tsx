@@ -11,9 +11,16 @@ import { useSessionStore } from "@/shared/store/session.store";
 const LINKS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/exercises", label: "Ejercicios" },
+  { href: "/routines", label: "Rutinas" },
 ];
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default function AppLayout({
+  children,
+  modal,
+}: {
+  children: React.ReactNode;
+  modal: React.ReactNode;
+}) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -56,6 +63,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="max-w-4xl mx-auto p-6">{children}</main>
+        {modal}
       </div>
     </AuthGuard>
   );
