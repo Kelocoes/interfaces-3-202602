@@ -7,6 +7,7 @@ import { authService } from "@/features/auth/services/auth.service";
 import { AuthGuard } from "@/features/auth/components/AuthGuard";
 import { NotificationBell } from "@/features/notifications/components/NotificationBell";
 import { useSessionStore } from "@/shared/store/session.store";
+import { toggleThemeAction } from "@/shared/actions/theme";
 
 const LINKS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -50,6 +51,12 @@ export default function AppLayout({
           </nav>
 
           <div className="flex items-center gap-3">
+            <form action={toggleThemeAction}>
+              <button type="submit" className="btn btn-ghost btn-sm">
+                Cambiar tema
+              </button>
+            </form>
+
             <NotificationBell />
 
             <button
